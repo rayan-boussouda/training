@@ -1,6 +1,19 @@
 import { Request, Response, NextFunction } from 'express';
 import * as postService from '../services/posts.service';
 
+export const getAllPosts = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const posts = await postService.getAllPosts();
+    res.status(200).json(posts);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getPosts = async (req: Request, res: Response) => {
   const posts = await postService.getPostsByUserId(Number(req.params.id));
   console.log(req);

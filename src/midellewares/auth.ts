@@ -11,10 +11,20 @@ export const auth = (req: Request, res: Response, next: NextFunction) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
       userId: number;
+      role: string;
     };
     req.user = decoded;
     next();
   } catch {
     throw new AppError('Invalid token', 401);
   }
+};
+
+export const requireRole = (role: string) => {
+  return (req: Request, _res: Response, next: NextFunction) => {
+    if (req.user?.role !== role) {
+      throw new AppError('Forbidden', 403);
+    }
+    next();
+  };
 };

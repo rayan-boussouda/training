@@ -24,8 +24,12 @@ export const login = async (email: string, password: string) => {
   if (!valid) {
     throw new AppError('Invalid Credentials', 401);
   }
-  const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, {
-    expiresIn: '1d',
-  });
+  const token = jwt.sign(
+    { userId: user.id, role: user.role },
+    process.env.JWT_SECRET!,
+    {
+      expiresIn: '1d',
+    },
+  );
   return { token };
 };

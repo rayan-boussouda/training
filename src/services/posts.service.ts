@@ -15,3 +15,8 @@ export const createPost = async (
   const post = await prisma.post.create({ data: { ...data, userId } });
   return post;
 };
+
+export const getAllPosts = async (): Promise<Post[]> => {
+  const posts = await prisma.post.findMany();
+  return posts;
+};
