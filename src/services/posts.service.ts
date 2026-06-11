@@ -1,5 +1,6 @@
 import prisma from '../config/prisma';
 import type { User, Prisma, Post } from '@prisma/client';
+import { CreatePostInput } from '../schemas/post.schema';
 
 export const getPostsByUserId = async (id: number): Promise<Post[]> => {
   const posts = await prisma.post.findMany({
@@ -10,9 +11,20 @@ export const getPostsByUserId = async (id: number): Promise<Post[]> => {
 
 export const createPost = async (
   userId: number,
-  data: Prisma.PostUncheckedCreateInput,
+  data: CreatePostInput,
 ): Promise<Post> => {
-  const post = await prisma.post.create({ data: { ...data, userId } });
+  const { tags, ...rest } = data;
+
+  const post = await prisma.post.create({
+    data: {
+      ...rest,
+      userId,
+      ...(tags && {
+        tags: { createMany: { data: tags } },
+      }),
+    },
+  });
+
   return post;
 };
 
