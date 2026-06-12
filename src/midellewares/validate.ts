@@ -8,7 +8,7 @@ export const validate = (schema: ZodType) => {
       const result = {
         body: req.body,
         params: req.params,
-        query: req.params,
+        query: req.query,
       };
       schema.parse(result);
       console.log('before coercion:', {

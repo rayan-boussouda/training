@@ -24,9 +24,23 @@ export const getPosts = async (req: Request, res: Response) => {
   return res.json(posts);
 };
 
-// export const getPostsPaginated = async (req:Request, res: Response) =>{
-//   const posts = await postServi
-// }
+export const getPostsPaginated = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { posts, total, totalPages, hasNext } =
+      await postService.getPostsPaginated(
+        req.user!.userId,
+        Number(req.query.page),
+        Number(req.query.size),
+      );
+    res.status(200).json({ posts, total, totalPages, hasNext });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const createPost = async (
   req: Request,
