@@ -51,15 +51,15 @@ model Movie {
   id          Int      @id @default(autoincrement())
   title       String
   synopsis    String
-  posterUrl   String
+  posterUrl   String?
   releaseYear DateTime
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now())
-  genres      Genre[]  @relation("_MovieGenres")
+  genres      Genre[]  @relation("MovieGenres")
 }
 
 model Genre {
   id     Int     @id @default(autoincrement())
   name   String  @unique
-  movies Movie[] @relation("_MovieGenres")
+  movies Movie[] @relation("MovieGenres")
 }
