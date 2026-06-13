@@ -3,6 +3,7 @@ import userRoutes from './routes/user.routes';
 import postRoutes from './routes/posts.routes';
 import tagsRoutes from './routes/tags.routes';
 import authRoutes from './routes/auth.routes';
+import movieRoutes from './routes/movies.routes';
 import { errorHandler } from './midellewares/errorHandler';
 const app = express();
 
@@ -19,6 +20,7 @@ app.use('/users', userRoutes);
 app.use('/posts', postRoutes);
 app.use('/tags', tagsRoutes);
 app.use('/auth', authRoutes);
+app.use('/movies', movieRoutes);
 app.use(errorHandler);
 
 export default app;

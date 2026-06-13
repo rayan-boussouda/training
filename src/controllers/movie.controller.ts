@@ -1,0 +1,14 @@
+import { NextFunction, Request, Response } from 'express';
+import * as movieService from '../services/movie.service';
+export const createMovie = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const movie = await movieService.createMovie(req.body);
+    res.status(201).json(movie);
+  } catch (error) {
+    next(error);
+  }
+};
