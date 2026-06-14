@@ -3,6 +3,7 @@ import { auth, requireRole } from '../midellewares/auth';
 import { validate } from '../midellewares/validate';
 import {
   createMovieSchema,
+  getMoviesByPageSchema,
   searchMovieSchema,
   updateMovieSchema,
 } from '../schemas/movie.schemas';
@@ -30,6 +31,7 @@ router.delete(
   validate(idParamSchema),
   controller.deleteMovie,
 );
+router.get('/', validate(getMoviesByPageSchema), controller.getMoviesByPage);
 router.get('/search', validate(searchMovieSchema), controller.searchMovies);
 router.get('/:id', validate(idParamSchema), controller.getById);
 
