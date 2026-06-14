@@ -26,5 +26,13 @@ export const createMovieSchema = z.object({
 export const updateMovieSchema = z.object({
   body: createMovieSchema.shape.body.partial(),
 });
+
+export const searchMovieSchema = z.object({
+  query: z.object({
+    title: z.string().min(1),
+  }),
+});
+
+export type SearchMovieSchema = z.infer<typeof searchMovieSchema>['query'];
 export type UpdateMovieSchema = z.infer<typeof updateMovieSchema>['body'];
 export type CreateMovieSchema = z.infer<typeof createMovieSchema>['body'];

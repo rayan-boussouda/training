@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import * as movieService from '../services/movie.service';
+import { SearchMovieSchema } from '../schemas/movie.schemas';
 export const createMovie = async (
   req: Request,
   res: Response,
@@ -50,6 +51,20 @@ export const getById = async (
   try {
     const movie = await movieService.getMovieById(Number(req.params.id));
     res.status(200).json(movie);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const searchMovies = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { title } = req.query as SearchMovieSchema;
+    const movies = await movieService.searchMovies(title);
+    res.status(200).json(movies);
   } catch (error) {
     next(error);
   }

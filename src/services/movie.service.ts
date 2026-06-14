@@ -1,6 +1,10 @@
 import prisma from '../config/prisma';
 import { Movie, Prisma } from '@prisma/client';
-import { CreateMovieSchema, UpdateMovieSchema } from '../schemas/movie.schemas';
+import {
+  CreateMovieSchema,
+  SearchMovieSchema,
+  UpdateMovieSchema,
+} from '../schemas/movie.schemas';
 import { AppError } from '../midellewares/errorHandler';
 
 export const createMovie = async (data: CreateMovieSchema): Promise<Movie> => {
@@ -63,4 +67,11 @@ export const getMovieById = async (movieId: number): Promise<Movie> => {
   });
   if (!movie) throw new AppError('Movie not found', 404);
   return movie;
+};
+
+export const searchMovies = async (title: string): Promise<Movie[]> => {
+  const movies = await prisma.movie.findMany({
+    where: { title: { contains: title, mode: 'insensitive' } },
+  });
+  return movies;
 };

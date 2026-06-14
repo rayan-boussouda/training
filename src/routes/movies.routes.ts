@@ -1,7 +1,11 @@
 import { Router } from 'express';
 import { auth, requireRole } from '../midellewares/auth';
 import { validate } from '../midellewares/validate';
-import { createMovieSchema, updateMovieSchema } from '../schemas/movie.schemas';
+import {
+  createMovieSchema,
+  searchMovieSchema,
+  updateMovieSchema,
+} from '../schemas/movie.schemas';
 import * as controller from '../controllers/movie.controller';
 import { idParamSchema } from '../schemas/common.schemas';
 
@@ -26,6 +30,7 @@ router.delete(
   validate(idParamSchema),
   controller.deleteMovie,
 );
+router.get('/search', validate(searchMovieSchema), controller.searchMovies);
 router.get('/:id', validate(idParamSchema), controller.getById);
 
 export default router;
