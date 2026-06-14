@@ -28,3 +28,16 @@ export const updateMovie = async (
     next(error);
   }
 };
+
+export const deleteMovie = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const movieDeleted = await movieService.deleteMovie(Number(req.params.id));
+    res.status(200).json(movieDeleted);
+  } catch (error) {
+    next(error);
+  }
+};
