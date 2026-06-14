@@ -26,5 +26,6 @@ router.delete(
   validate(idParamSchema),
   controller.deleteMovie,
 );
+router.get('/:id', validate(idParamSchema), controller.getById);
 
 export default router;

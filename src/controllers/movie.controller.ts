@@ -41,3 +41,16 @@ export const deleteMovie = async (
     next(error);
   }
 };
+
+export const getById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const movie = await movieService.getMovieById(Number(req.params.id));
+    res.status(200).json(movie);
+  } catch (error) {
+    next(error);
+  }
+};

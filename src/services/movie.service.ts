@@ -55,3 +55,12 @@ export const deleteMovie = async (movieId: number): Promise<Movie> => {
     throw error;
   }
 };
+
+export const getMovieById = async (movieId: number): Promise<Movie> => {
+  const movie = await prisma.movie.findUnique({
+    where: { id: movieId },
+    include: { genres: true },
+  });
+  if (!movie) throw new AppError('Movie not found', 404);
+  return movie;
+};
