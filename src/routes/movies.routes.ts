@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { auth, requireRole } from '../midellewares/auth';
 import { validate } from '../midellewares/validate';
-import { createMovieSchema } from '../schemas/movie.schemas';
+import { createMovieSchema, updateMovieSchema } from '../schemas/movie.schemas';
 import * as controller from '../controllers/movie.controller';
 
 const router = Router();
@@ -12,6 +12,12 @@ router.post(
   requireRole('ADMIN'),
   validate(createMovieSchema),
   controller.createMovie,
+);
+router.patch(
+  '/:id',
+  requireRole('ADMIN'),
+  validate(updateMovieSchema),
+  controller.updateMovie,
 );
 
 export default router;

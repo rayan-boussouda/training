@@ -23,4 +23,8 @@ export const createMovieSchema = z.object({
   }),
 });
 
+export const updateMovieSchema = z.object({
+  body: createMovieSchema.shape.body.partial(),
+});
+export type UpdateMovieSchema = z.infer<typeof updateMovieSchema>['body'];
 export type CreateMovieSchema = z.infer<typeof createMovieSchema>['body'];
