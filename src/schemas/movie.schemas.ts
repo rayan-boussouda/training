@@ -1,15 +1,5 @@
-// model Movie {
-//   id          Int      @id @default(autoincrement())
-//   title       String
-//   synopsis    String
-//   posterUrl   String
-//   releaseYear DateTime
-//   createdAt   DateTime @default(now())
-//   updatedAt   DateTime @default(now())
-//   genres      Genre[]  @relation("_MovieGenres")
-// }
-
 import z from 'zod';
+import { paginationSchema } from './common.schemas';
 
 export const createMovieSchema = z.object({
   body: z.object({
@@ -33,6 +23,17 @@ export const searchMovieSchema = z.object({
   }),
 });
 
+export const getMoviesByPageSchema = z.object({
+  query: paginationSchema.extend({
+    genreId: z.coerce.number().int().positive().optional(),
+    sortBy: z.enum(['title', 'releaseYear']).optional().default('title'),
+    order: z.enum(['asc', 'desc']).optional().default('asc'),
+  }),
+});
+
 export type SearchMovieSchema = z.infer<typeof searchMovieSchema>['query'];
 export type UpdateMovieSchema = z.infer<typeof updateMovieSchema>['body'];
 export type CreateMovieSchema = z.infer<typeof createMovieSchema>['body'];
+export type GetMoviesByPageSchema = z.infer<
+  typeof getMoviesByPageSchema
+>['query'];

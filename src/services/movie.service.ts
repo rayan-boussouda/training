@@ -75,3 +75,34 @@ export const searchMovies = async (title: string): Promise<Movie[]> => {
   });
   return movies;
 };
+
+export const getMoviesByPage = async (
+  page: number,
+  limit: number,
+  sortBy: 'title' | 'releaseYear',
+  order: 'asc' | 'desc',
+  genreId?: number,
+): Promise<{
+  movies: Movie[];
+  total: number;
+  totalPages: number;
+  hasNext: boolean;
+}> => {
+  const where = genreId ? { genres: { some: { id: genreId } } } : {};
+
+  const [movies, total] = await prisma.$transaction([
+    prisma.movie.findMany({
+      where,
+      skip: (page - 1) * limit,
+      take: limit,
+      orderBy: { [sortBy]: order },
+    }),
+    prisma.movie.count({ where }),
+  ]);
+  return {
+    movies,
+    total,
+    totalPages: Math.ceil(total / limit),
+    hasNext: page < Math.ceil(total / limit),
+  };
+};
