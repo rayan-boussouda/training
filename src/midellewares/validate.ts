@@ -11,19 +11,9 @@ export const validate = (schema: ZodType) => {
         query: req.query,
       };
       schema.parse(result);
-      console.log('before coercion:', {
-        body: req.body,
-        params: req.params,
-        query: req.query,
-      });
       req.body = result.body ?? {};
       req.params = result.params ?? {};
       req.query = result.query ?? {};
-      console.log('after coercion:', {
-        body: req.body,
-        params: req.params,
-        query: req.query,
-      });
       next();
     } catch (error) {
       if (error instanceof ZodError) {
