@@ -4,6 +4,7 @@ import postRoutes from './routes/posts.routes';
 import tagsRoutes from './routes/tags.routes';
 import authRoutes from './routes/auth.routes';
 import movieRoutes from './routes/movies.routes';
+import genreRoutes from './routes/genres.routes';
 import { errorHandler } from './midellewares/errorHandler';
 const app = express();
 
@@ -21,6 +22,7 @@ app.use('/posts', postRoutes);
 app.use('/tags', tagsRoutes);
 app.use('/auth', authRoutes);
 app.use('/movies', movieRoutes);
+app.use('/genres', genreRoutes);
 app.use(errorHandler);
 
 export default app;
