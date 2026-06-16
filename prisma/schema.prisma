@@ -19,8 +19,9 @@ model User {
   email     String   @unique
   password  String
   createdAt DateTime @default(now())
-  posts  Post[]
-  role Role @default(USER)
+  posts       Post[]
+  role        Role        @default(USER)
+  userMovies  UserMovie[]
 }
 
 model Post {
@@ -55,7 +56,27 @@ model Movie {
   releaseYear DateTime
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now())
-  genres      Genre[]  @relation("MovieGenres")
+  genres      Genre[]      @relation("MovieGenres")
+  userMovies  UserMovie[]
+}
+enum UserMovieStatus {
+  WATCHLIST
+  WATCHED
+  FAVORITE
+}
+
+model UserMovie {
+  id        Int             @id @default(autoincrement())
+  userId    Int
+  movieId   Int
+  status    UserMovieStatus
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  user  User  @relation(fields: [userId], references: [id])
+  movie Movie @relation(fields: [movieId], references: [id])
+
+  @@unique([userId, movieId, status])
 }
 
 model Genre {
