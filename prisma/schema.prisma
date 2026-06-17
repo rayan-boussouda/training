@@ -14,16 +14,6 @@ enum Role {
 }
 
 model User {
-<<<<<<< HEAD
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  posts       Post[]
-  role        Role        @default(USER)
-  userMovies  UserMovie[]
-=======
   id         Int         @id @default(autoincrement())
   name       String
   email      String      @unique
@@ -33,7 +23,6 @@ model User {
   role       Role        @default(USER)
   userMovies UserMovie[]
   ratings    Rating[]
->>>>>>> 1a725a0 ([KAN-20] ratings)
 }
 
 model Post {
