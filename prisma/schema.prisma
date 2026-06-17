@@ -23,6 +23,7 @@ model User {
   role       Role        @default(USER)
   userMovies UserMovie[]
   ratings    Rating[]
+  reviews Review[]
 }
 
 model Post {
@@ -61,6 +62,7 @@ model Movie {
   genres      Genre[]     @relation("MovieGenres")
   userMovies  UserMovie[]
   ratings     Rating[]
+  reviews     Review[]
 }
 
 enum UserMovieStatus {
@@ -101,4 +103,13 @@ model Genre {
   id     Int     @id @default(autoincrement())
   name   String  @unique
   movies Movie[] @relation("MovieGenres")
+}
+
+model Review {
+  id Int @id @default(autoincrement())
+  userId Int
+  movieId Int
+  content String
+  user User @relation(fields: [userId], references: [id])
+  movie Movie @relation(fields: [movieId], references: [id])
 }
