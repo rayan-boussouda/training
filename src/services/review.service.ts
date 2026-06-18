@@ -5,6 +5,7 @@ import {
   UpdateReviewSchema,
 } from '../schemas/review.schemas';
 import { AppError } from '../midellewares/errorHandler';
+import { IdParamSchema } from '../schemas/common.schemas';
 
 export const createReview = async (
   userId: number,
@@ -63,9 +64,44 @@ export const deleteReview = async (
   }
 };
 
-export const getMovieReviews = async (movieId: number): Promise<Review[]> => {
-  return await prisma.review.findMany({
-    where: { id: movieId },
-    include: { user: { select: { id: true, name: true } } },
-  });
+export const getMovieReviews = async (
+  movieId: number,
+): Promise<{ reviews: Review[]; total: number }> => {
+  const [reviews, total] = await prisma.$transaction([
+    prisma.review.findMany({
+      where: { id: movieId },
+      include: { user: { select: { id: true, name: true } } },
+    }),
+    prisma.review.count({ where: { movieId } }),
+  ]);
+  return { reviews, total };
+};
+
+export const likeReview = async (userId: number, reviewId: number) => {
+  try {
+    return await prisma.review.update({
+      where: { id: reviewId },
+      data: { users: { connect: { id: userId } } },
+    });
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2025') throw new AppError('Review not found', 404);
+      if (error.code === 'P2002')
+        throw new AppError('Review Already Liked', 404);
+    }
+    throw error;
+  }
+};
+export const unlikeReview = async (userId: number, reviewId: number) => {
+  try {
+    return await prisma.review.update({
+      where: { id: reviewId },
+      data: { users: { disconnect: { id: userId } } },
+    });
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2025') throw new AppError('Review not found', 404);
+    }
+    throw error;
+  }
 };

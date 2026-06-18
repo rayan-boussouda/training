@@ -64,3 +64,35 @@ export const getMovieReviews = async (
     next(error);
   }
 };
+
+export const likeReview = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const like = await reviewService.likeReview(
+      req.user!.userId,
+      Number(req.params.id),
+    );
+    res.status(201).json(like);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const unlikeReview = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const result = await reviewService.unlikeReview(
+      req.user!.userId,
+      Number(req.params.id),
+    );
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};

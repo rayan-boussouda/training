@@ -17,5 +17,6 @@ router.post('/', validate(createReviewSchema), controller.createReview);
 router.patch('/:id', validate(updateReviewSchema), controller.updateReview);
 router.delete('/:id', validate(idParamSchema), controller.deleteReview);
 router.get('/', validate(getMovieReviewsSchema), controller.getMovieReviews);
-
+router.post('/:id/like', validate(idParamSchema), controller.likeReview);
+router.delete('/:id/like', validate(idParamSchema), controller.unlikeReview);
 export default router;
