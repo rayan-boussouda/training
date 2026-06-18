@@ -7,6 +7,7 @@ import movieRoutes from './routes/movies.routes';
 import genreRoutes from './routes/genres.routes';
 import ratingRoutes from './routes/rating.routes';
 import reviewRoutes from './routes/review.routes';
+import userMovieRoutes from './routes/userMovie.routes';
 import { errorHandler } from './midellewares/errorHandler';
 const app = express();
 
@@ -27,6 +28,7 @@ app.use('/movies', movieRoutes);
 app.use('/genres', genreRoutes);
 app.use('/ratings', ratingRoutes);
 app.use('/reviews', reviewRoutes);
+app.use('/user-movies', userMovieRoutes);
 app.use(errorHandler);
 
 export default app;

@@ -1,58 +1,25 @@
-import { Role } from '@prisma/client';
-import bcrypt from 'bcrypt';
 import prisma from '../src/config/prisma';
+import { seedGenres } from './seeds/reference/genres';
+import { seedAdmin } from './seeds/reference/admin';
+import { seedUsers } from './seeds/sample/users';
+import { seedMovies } from './seeds/sample/movies';
+import { seedUserMovies } from './seeds/sample/userMovies';
+import { seedRatings } from './seeds/sample/ratings';
+import { seedReviews } from './seeds/sample/reviews';
 
 async function main() {
-  await prisma.postTag.deleteMany();
-  await prisma.post.deleteMany();
-  await prisma.tag.deleteMany();
-  await prisma.user.deleteMany();
+  // Reference — always
+  await seedGenres();
+  await seedAdmin();
 
-  const hash = await bcrypt.hash('password123', 10);
-
-  const [alice, bob, admin] = await Promise.all([
-    prisma.user.create({
-      data: { name: 'Alice', email: 'alice@example.com', password: hash, role: Role.USER },
-    }),
-    prisma.user.create({
-      data: { name: 'Bob', email: 'bob@example.com', password: hash, role: Role.USER },
-    }),
-    prisma.user.create({
-      data: { name: 'Admin', email: 'admin@example.com', password: hash, role: Role.ADMIN },
-    }),
-  ]);
-
-  const [post3, post4, post5] = await Promise.all([
-    prisma.post.create({ data: { title: 'Bob first post', content: 'Hello from Bob!', userId: bob.id } }),
-    prisma.post.create({ data: { title: 'Bob second post', content: 'Another post from Bob.', userId: bob.id } }),
-    prisma.post.create({ data: { title: 'Admin announcement', content: 'Welcome to the platform!', userId: admin.id } }),
-  ]);
-
-  await prisma.post.createMany({
-    data: Array.from({ length: 50 }, (_, i) => ({
-      title: `Alice post ${i + 1}`,
-      content: `This is Alice's post number ${i + 1}.`,
-      userId: alice.id,
-    })),
-  });
-
-  const alicePosts = await prisma.post.findMany({ where: { userId: alice.id } });
-
-  const [tagJs, tagNode, tagUnused] = await Promise.all([
-    prisma.tag.create({ data: { name: 'javascript' } }),
-    prisma.tag.create({ data: { name: 'nodejs' } }),
-    prisma.tag.create({ data: { name: 'unused-tag' } }),
-  ]);
-
-  await Promise.all([
-    prisma.postTag.create({ data: { postId: alicePosts[0].id, tagId: tagJs.id } }),
-    prisma.postTag.create({ data: { postId: alicePosts[1].id, tagId: tagJs.id } }),
-    prisma.postTag.create({ data: { postId: alicePosts[1].id, tagId: tagNode.id } }),
-    prisma.postTag.create({ data: { postId: post3.id, tagId: tagNode.id } }),
-    prisma.postTag.create({ data: { postId: post5.id, tagId: tagJs.id } }),
-  ]);
-
-  console.log(`Seeded: 3 users, ${50 + 3} posts (50 for Alice), 3 tags (1 unattached)`);
+  // Sample — dev only
+  if (process.env.NODE_ENV !== 'production') {
+    await seedUsers();
+    await seedMovies(); // depends on genres
+    await seedUserMovies(); // depends on users + movies
+    await seedRatings(); // depends on users + movies
+    await seedReviews(); // depends on users + movies
+  }
 }
 
 main()

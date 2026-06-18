@@ -1,8 +1,15 @@
 import { NextFunction, Request, Response } from 'express';
+import { ParsedQs } from 'qs';
 import { ZodError, ZodType } from 'zod';
 import { AppError } from './errorHandler';
 
-export const validate = (schema: ZodType) => {
+interface ParsedRequest {
+  body?: Record<string, unknown>;
+  params?: Record<string, unknown>;
+  query?: Record<string, unknown>;
+}
+
+export const validate = <T extends ParsedRequest>(schema: ZodType<T>) => {
   return (req: Request, _res: Response, next: NextFunction) => {
     try {
       const result = {
@@ -10,10 +17,10 @@ export const validate = (schema: ZodType) => {
         params: req.params,
         query: req.query,
       };
-      schema.parse(result);
-      req.body = result.body ?? {};
-      req.params = result.params ?? {};
-      req.query = result.query ?? {};
+      const parsed = schema.parse(result);
+      req.body = parsed.body ?? {};
+      req.params = (parsed.params ?? {}) as Record<string, string>;
+      req.query = (parsed.query ?? {}) as ParsedQs;
       next();
     } catch (error) {
       if (error instanceof ZodError) {
